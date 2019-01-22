@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MMWebApi.Entities
 {
-    public class Member
+    public class MemberEntity
     {
         public int MemberID { get; set; }
         public string FirstName { get; set; }

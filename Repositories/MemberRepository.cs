@@ -30,7 +30,7 @@ namespace MMWebApi.Repositories
             ConnectionString = connectionString;
         }
 
-        public async Task<Member> Get(int memberID)
+        public async Task<MemberEntity> Get(int memberID)
         {
             var parameters = new
             {
@@ -39,12 +39,12 @@ namespace MMWebApi.Repositories
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                Member userInfo = await connection.QueryFirstAsync<Member>("dbo.GetMember", parameters, commandType: CommandType.StoredProcedure);
+                MemberEntity userInfo = await connection.QueryFirstAsync<MemberEntity>("dbo.GetMember", parameters, commandType: CommandType.StoredProcedure);
                 return userInfo;
             }
         }
 
-        public async Task<IEnumerable<Member>> GetAll(MemberViewModel parms)
+        public async Task<IEnumerable<MemberEntity>> GetAll(GetMemberParms parms)
         {
             var parameters = new
             {
@@ -55,7 +55,7 @@ namespace MMWebApi.Repositories
             {
                 try
                 {
-                    IEnumerable<Member> members = (IEnumerable<Member>)await connection.QueryAsync<Member>("dbo.GetMembers", parameters, commandType: CommandType.StoredProcedure);
+                    IEnumerable<MemberEntity> members = (IEnumerable<MemberEntity>)await connection.QueryAsync<MemberEntity>("dbo.GetMembers", parameters, commandType: CommandType.StoredProcedure);
                     return members;
                 }
                 catch(Exception ex)
@@ -65,6 +65,87 @@ namespace MMWebApi.Repositories
                 }
 
             }
+        }
+
+        public async Task<bool> Create(CreateMemberParms parms)
+        {
+            var parameters = new
+            {
+                MemberTypeID = parms.MemberTypeID,                
+                FirstName = parms.FirstName,
+                LastName = parms.LastName,
+                MiddleInitial = parms.MiddleInitial,
+                NickName = parms.NickName,
+                Address1 = parms.Address1,                
+                City = parms.City,
+                State = parms.State,
+                Zip = parms.Zip,
+                Email = parms.Email,
+                PhoneNumber1 = parms.PhoneNumber1,
+                PhoneType1 = parms.PhoneType1,
+                PhoneNumber2 = parms.PhoneNumber2,
+                PhoneType2 = parms.PhoneType2,
+                PhotoURL = parms.PhotoURL,
+                MemberNote = parms.MemberNote,
+                Active = parms.Active,
+                CreatedByID = parms.CreatedByID
+            };
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    bool ok = 1 == (int)await connection.ExecuteAsync("dbo.CreateMember", parameters, commandType: CommandType.StoredProcedure);
+                    return ok;
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(string.Format("Error: {0}", ex.Message));
+                    return false;
+                }
+
+            }
+        }
+
+        public async Task<bool> Update(UpdateMemberParms parms)
+        {
+            var parameters = new
+            {
+                MemberID = parms.MemberID,
+                UpdatedByID = parms.UpdatedByID,
+                MemberTypeID = parms.MemberTypeID,
+                FirstName = parms.FirstName,
+                LastName = parms.LastName,
+                MiddleInitial = parms.MiddleInitial,
+                NickName = parms.NickName,
+                Address1 = parms.Address1,
+                City = parms.City,
+                State = parms.State,
+                Zip = parms.Zip,
+                Email = parms.Email,
+                PhoneNumber1 = parms.PhoneNumber1,
+                PhoneType1 = parms.PhoneType1,
+                PhoneNumber2 = parms.PhoneNumber2,
+                PhoneType2 = parms.PhoneType2,
+                PhotoURL = parms.PhotoURL,
+                MemberNote = parms.MemberNote,
+                Active = parms.Active,                
+            };
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                try
+                {
+                    bool ok = 1 == (int)await connection.ExecuteAsync("dbo.UpdateMember", parameters, commandType: CommandType.StoredProcedure);
+                    return ok;
+                }
+                catch (Exception ex)
+                {
+                    Console.Write(string.Format("Error: {0}", ex.Message));
+                    return false;
+                }
+
+            }        
         }
     }
 }

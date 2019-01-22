@@ -30,11 +30,11 @@ namespace MMWebApi.Controllers
         }
 
         [HttpPost("GetAll")]
-        public async Task<IActionResult> GetAll([FromBody] MemberViewModel parms)
+        public async Task<IActionResult> GetAll([FromBody] GetMemberParms parms)
         {
             try
             {
-                IEnumerable<Member> members = await _memberRepo.GetAll(parms);
+                IEnumerable<MemberEntity> members = await _memberRepo.GetAll(parms);
                 return this.Ok(members);
             }
             catch (Exception ex)
@@ -43,28 +43,13 @@ namespace MMWebApi.Controllers
                 return BadRequest();
             }
         }
-        // GET: api/Default
-        //[HttpGet("GetAll") ]
-        //public async Task<IActionResult> GetAll(bool activeMembers)
-        //{
-        //    try
-        //    {
-        //        IEnumerable<Member> members = await _memberRepo.GetAll(activeMembers);
-        //        return this.Ok(members);                
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.LogError(ex, "MemberViewController threw an exception");
-        //        return BadRequest();
-        //    }
-        //}
 
         [HttpGet("Get")]
         public async Task<IActionResult> Get(int memberID)
         {
             try
             {
-                Member userInfo = await _memberRepo.Get(memberID);
+                MemberEntity userInfo = await _memberRepo.Get(memberID);
 
                 return this.Ok(userInfo);
             }
@@ -75,34 +60,36 @@ namespace MMWebApi.Controllers
             }
         }
 
-        //// POST api/values
-        //[HttpPost ("GetMember")]
-        //public async Task<IActionResult> Get([FromBody] MemberViewSearchParms searchParms)        
-        //{
-        //    try
-        //    {
-        //        Member userInfo = await _memberRepo.Get(searchParms);
-
-        //        return this.Ok(userInfo);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        Log.LogError(ex, "MemberViewController threw an exception");
-        //        return BadRequest();
-        //    }
-            
-        //}
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] CreateMemberParms parms)
         {
+            try
+            {
+                await _memberRepo.Create(parms);
+                return this.Ok("Success");
+            }
+            catch (Exception ex)
+            {
+                Log.LogError(ex, "MemberViewController threw an exception");
+                return BadRequest("There was an error creating the member profile");
+            }
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("Update")]
+        public async Task<IActionResult> Update([FromBody] UpdateMemberParms parms)
         {
+            try
+            {
+                await _memberRepo.Update(parms);
+                return this.Ok("Success");
+            }
+            catch (Exception ex)
+            {
+                Log.LogError(ex, "MemberViewController threw an exception");
+                return BadRequest("There was an error creating the member profile");
+            }
         }
+
+
     }
 }

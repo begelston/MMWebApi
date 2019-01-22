@@ -9,7 +9,9 @@ namespace MMWebApi.Interfaces
 {
     public interface IMemberRepository
     {
-        Task<Member> Get(int memberID);
-        Task<IEnumerable<Member>> GetAll(MemberViewModel parms);
+        Task<MemberEntity> Get(int memberID);
+        Task<IEnumerable<MemberEntity>> GetAll(GetMemberParms parms);
+        Task<bool> Create(CreateMemberParms parms);
+        Task<bool> Update(UpdateMemberParms parms);
     }
 }
